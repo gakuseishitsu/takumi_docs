@@ -148,7 +148,7 @@ int main(int argc, char const* argv[]){
  - 2016/06/30
 
 * * *
-## MarkDown記法のサンプル
+## MarkDown記法のサンプル (Haroopadでしか動作しないかも)
 $$
 r^2 = x^2 + y
 $$
