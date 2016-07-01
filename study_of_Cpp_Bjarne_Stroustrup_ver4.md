@@ -1,13 +1,15 @@
 # ビャーネ・ストラウストラップ プログラミング言語C++ [第4版]
 
 ## abstract
- C++のお勉強のために「ビャーネ・ストラウストラップ プログラミング言語C\+\+[第4版]」を読んで, ためになった部分をここにまとめていく.
+C++の勉強のために「ビャーネ・ストラウストラップ プログラミング言語C\+\+[第4版]」を読んで, ためになった部分をここにまとめていく.
+使用しているmarkdown用のエディタはHaroopadで必ずしもgithubでキレイに表示されるとは限らない.
 
 ## Index
 * [第1章 本書の読み進め方](#第1章-本書の読み進め方)
 * [第2章 C\+\+を探検しよう:基本](#第2章-c++を探検しよう:基本)
 * [第3章 C\+\+を探検しよう:抽象化のメカニズム](#第3章-c++を探検しよう:抽象化のメカニズム)
 * [第4章 C\+\+を探検しよう:コンテナとアルゴリズム](#第4章-c++を探検しよう:コンテナとアルゴリズム)
+* [第5章 C\+\+を探検しよう:並行処理とユーティリティ](#第5章-c++を探検しよう:並行処理とユーティリティ)
 
 ## 第1章 本書の読み進め方
 - **1.3.2 C++11の新機能について**
@@ -226,4 +228,56 @@ String_map<int> m; // mはMap<string, int>
 ```
 
 ## 第4章 C++を探検しよう:コンテナとアルゴリズム
-- **to be continued ...**
+- **4.5.1 反復子の利用**
+  -　反復子を使うと, アルゴリズムとコンテナが分離できる. アルゴリズムは反復子を介してデータを処理するが, そのデータが格納されているコンテナについては何も知らないし, コンテナも自身のデータが適用されるアルゴリズムについて何も知らない. ただ要求に応える形でbegin()やend()などの反復子を提供する.
+  -　以下に反復子を使ったコンテナに対するアルゴリズムの例を示す. find_allはC中のvをすべて探すアルゴリズムである.
+```cpp
+template<typename T>
+using Iterator = typename T::iterator; //Tの反復子
+　
+template<typename C, typename V>
+vector<Iterator<C>> find_all(C& c, V v){
+	vector<Iterator<C>> res;
+	for(auto p = c.begin();p!c.end();++p)
+		if (*p==v)
+			res.push_back(p);
+	return res;
+}
+　
+void test{
+	string m {"Mary had a little lamb"};
+	for(auto p : find_all(m,'a')) // pはstring::iterator
+		if(*p='a')
+			cerr << "string bug!\n";
+　
+	list<double> ld {1.1, 2.2, 3.3, 1.1};
+	for(auto p : find_all(ld, 1.1))
+		if (*p!=1.1)
+			cerr << "list bug!\n";
+}
+```
+- **4.5.3 ストリーム反復子**
+  -　ストリームにも反復子がある. 通常はistream_iteratorやostream_iteratorを直接利用することはなく, アルゴリズムの引数として与えることが多い.
+  -　以下にファイルを読み取って, 単語をソートして重複するものを除去してその結果をファイルへと書き出すプログラムを示す.
+```cpp
+int main(){
+	string from, to;
+	cin >> from >> to; // 入力元と出力先のファイル名を読み込む
+　
+	ifstream is {from}; // ファイル"from"の入力ストリーム
+	istream_iterator<string> ii {is}; // streamへの入力反復子
+	istream_iterator<string> eos {}; // 入力終端のための番兵
+　
+	ofstream os {to}; // ファイル"to"への出力ストリーム
+	ostream_iterator<string> oo {os, "\n"}; //streamへの出力反復子, 第二引数は出力する値の区切り
+　
+	vector<string> b {ii, eos}; // bは入力で初期化されるvector
+	sort(b.begin(), b.end()); // バッファをソート
+	unique_copy(b.begin(), b.end(), oo); // 重複なく出力にバッファをコピー
+	return !is.eof() || !os; // エラーの状態を返却
+}
+```
+
+## 第5章 C++を探検しよう:並行処理とユーティリティ
+- **4.5.1 反復子の利用**
+  -　反復子を使うと, 
