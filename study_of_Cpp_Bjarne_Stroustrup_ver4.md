@@ -11,6 +11,7 @@ C++の勉強のために「ビャーネ・ストラウストラップ プログ�
 * [第4章 C\+\+を探検しよう:コンテナとアルゴリズム](#第4章-c++を探検しよう:コンテナとアルゴリズム)
 * [第5章 C\+\+を探検しよう:並行処理とユーティリティ](#第5章-c++を探検しよう:並行処理とユーティリティ)
 * [第6章 型と宣言](#第6章-型と宣言)
+* [第7章 ポインタと配列と参照](#第7章-ポインタと配列と参照)
 
 ## 第1章 本書の読み進め方
 - **1.3.2 C++11の新機能について**
@@ -291,5 +292,46 @@ cout << duration_cast<milliseconds>(t1-t0).count() << "msec\n";
 ```
 
 ## 第6章 型と宣言
-- **5.4.1 時間**
-  -　処理時間を測
+- **6.3.5 初期化**
+  -　初期化子には以下の4つがある. このうちあらゆる局面で利用できるのは先頭のみ. よって筆者は先頭を勧めている.
+```cpp
+X a1 {v};
+X a2 = {V};
+X a3 = v;
+X a4(v);
+```
+  -　autoを用いる場合には=を用いたほうが良い.
+```cpp
+auto z1 {99}; // z1はinitializer_list<int>
+auto z2 = 99; // z2はint
+```
+- **6.3.6.1 auto型指定子**
+  -　autoは型を記述したり取得したりするのに手間がかかるときに便利になる.
+  -　特に理由がない場合, 狭いスコープではautoを使うべき.
+```cpp
+template<typename T> void fi(vector<T>& arg){
+	for (typename vector<T>::iterator p = arg.begin();p!=arg.end();++p)
+		*p = 7;
+	for (auto p = arg.begin();p!=arg.end();++p)
+		*p = 7;
+}
+```
+- **6.3.6.3 decltype型指定子**
+  -　floatでできた行列とdoubleでできた行列を足す関数を作るときにdecltypeで返り値の型を宣言できる.
+```cpp
+template<typename T, typename U>
+auto operator+(const Matrix<T>& a, const Matrix<U>& b) -> Matrix<decltype(T{}+U{})>;
+　
+template<typename T, typename U>
+auto operator+(const Matrix<T>& a, const Matrix<U>& b) -> Matrix<decltype(T{}+U{})>{
+	Matrix<decltype(T{}+U{})> res;
+	for (int i=0;i!=a.rows();++i)
+		for (int j=0;j!=a.cols();++j)
+			res(i,j) += a(i,j) + b(i,j);
+	return res;
+}
+```
+
+## 第7章 ポインタと配列と参照
+- **7.0.0 **
+  -　to be continued...
