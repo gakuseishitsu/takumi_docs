@@ -13,6 +13,7 @@
 * [第6章 型と宣言](#chap6)
 * [第7章 ポインタと配列と参照](#chap7)
 * [第8章 構造体と共用体と列挙体](#chap8)
+* [第9章 文](#chap9)
 
 <h2 id="chap1">第1章 本書の読み進め方</h2>
 - **1.3.2 C\+\+11の新機能について**  
@@ -334,7 +335,7 @@ auto operator+(const Matrix<T>& a, const Matrix<U>& b) -> Matrix<decltype(T{}+U{
 ```
 
 <h2 id="chap7">第7章 ポインタと配列と参照</h2>
-- **7.3 配列 **  
+- **7.3 配列**  
   -　配列は静的にも割り当てられるし, スタック上にも割り当てられるし, 空き容量にも割り当てられる.  
   -　空き容量に割り当てられた配列は使用後にそのポインタを一回だけdelete[]しなければいけない. これを簡単に行うには空き容量上の配列を資源ハンドル(string, vector, unique_ptr等)にまかせる.  
   -　静的やスタック上に割り当てた場合はdelete[]してはいけない.  
@@ -346,7 +347,7 @@ void f(){
 	int*p = new int[40]; // 空き領域に格納される40個のint
 }
 ```
-- **7.4.1 配列の操作 **  
+- **7.4.1 配列の操作**  
   -　以下のコードは実質的な速度差はない, 好きなほうを選べばよい  
 ```cpp
 void f(char v[]){
@@ -359,5 +360,66 @@ void f(char v[]){
 ```
 
 <h2 id="chap8">第8章 構造体と共用体と列挙体</h2>
-- **8. **  
-  -　Ah  
+- **8.2.1 structのレイアウト**  
+  -　structのオブジェクトはメンバが宣言順番に格納されるが, マシンによって一定の境界にアラインされるため, メンバの合計のバイト数が構造体のバイト数にはならない. よってメモリを最適化したいならば, メンバは大きさ順で宣言したほうがいい.  
+- **8.4 列挙体**  
+  -　新しく追加されたenum classとの差  
+　-　enum class : 列挙子の名前のスコープは, enum内に局所的であり, その値が他の型へと暗黙的に変換されない.  
+　-　単なる enum : 列挙子の名前はenumと同じスコープに入って, その値は整数へと暗黙的に変換される.  
+  -　予想外の動作を防ぐためには基本的にはenum classを使ったほうがいい.  
+```cpp
+enum class Traffic_light { red, yellow, green};
+enum class Warning { green, yellow, orange, red};
+　
+Warning a1 = 7; // エラー : int->Wrning変換はない
+int a2 = green; // エラー : greenはスコープにない
+int a3 = Warning::green; // エラー : Warning->int変換はない
+Warning a4 = Warning::green; // OK
+　
+void f(Traffic_light x){
+	if(x){} // エラー : 0との暗黙的な比較はない
+	if(x == 9){} // エラー : 9はTraffic_lightではない
+	if(x == red){} // エラー：redはスコープ中にない
+	if(x == Warning::red){} // エラー : xはWarningではない
+	if(x == Traffic_light::red){} //OK
+}
+```
+- **8.4.1 enum class**  
+  -　以下のようなenum classやオペレータ|や&を定義することで安全かつ簡潔に利用できる.  
+```cpp
+enum class Printer_flags{
+	none = 0,
+	acknowledge = 1,
+	paper_empty = 2,
+	busy = 4,
+	out_of_black = 8,
+	out_of_color = 16,
+	//
+};
+　
+constexpr Printer_flags operator|(Printer_flags a, Printer_flgs b){
+	return static_cast<Printer_flags>((static_cast<int>(a)|(static_cast<int>(b));
+}
+constexpr Printer_flags operator&(Printer_flags a, Printer_flgs b){
+	return static_cast<Printer_flags>((static_cast<int>(a)&(static_cast<int>(b));
+}
+　
+void g(Printer_flgs x){
+	switch (x){
+	case Printer_flags::acknowledge:
+		//...
+		break;
+	case Printer_flags::busy:
+		//...
+		break;
+	case Printer_flags::out_of_black|Printer_flags::out_of_color:
+		//...
+		break;
+	//...
+	}
+}
+```
+
+<h2 id="chap9">第9章 文</h2>
+- **9.. ah**  
+  -　ah  
