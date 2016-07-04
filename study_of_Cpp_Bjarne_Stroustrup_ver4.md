@@ -16,6 +16,8 @@
 * [第9章 文](#chap9)
 * [第10章 式](#chap10)
 * [第11章 主要な演算子](#chap11)
+* [第12章 関数](#chap12)
+* [第13章 例外処理](#chap13)
 
 <h2 id="chap1">第1章 本書の読み進め方</h2>
 - **1.3.2 C++11の新機能について**  
@@ -430,3 +432,41 @@ void g(Printer_flgs x){
 
 <h2 id="chap11">第11章 主要な演算子</h2>
 - **特筆することはない**  
+
+<h2 id="chap12">第12章 関数</h2>
+- **12.2.1 参照引数**  
+  -　引数の受け渡しは以下のように選択するのがよい(Vectorとかは例外みたい?)  
+　-　1. 小規模オブジェクトには, 値渡しを用いる.  
+　-　2. 変更する必要がない大規模オブジェクトにはconst参照渡しを用いる  
+　-　3. 引数を通してオブジェクトを変更せずに, returnによって値を返す  
+　-　4. ムーブと完全転送の実装では, 右辺値参照を用いる  
+　-　5. オブジェクトが存在しないことがありうる場合にはポインタを用いる. このときオブジェクトが存在しないことはnullptrで表現する  
+　-　6. どうしても必要な場合のみ参照渡しを用いる  
+- **12.2.5 デフォルト引数**  
+  -　クラスにおいて本当のコンストラクタを一個だけにして処理を一か所に集中させると, 重複の繰り返しが不要になる.  
+```cpp
+class complex {
+	double re, im;
+public:
+	complex(double r,double i) :re{r},im{i}{} //二個のスカラからcomplexを構築
+	complex(double r) :re{r}, im{0}{} // 一個のスカラからcomplexを構築
+	complex() :re{0}, im{0}{} //デフォルトのcomplexは{0,0}
+}
+　
+class complex {
+	double re, im;
+public:
+	complex(double r,double i) :re{r},im{i}{} //二個のスカラからcomplexを構築
+	complex(double r) :complex{r,0} {} // 一個のスカラからcomplexを構築
+	complex() :complex{0,0} {} //デフォルトのcomplexは{0,0}
+}
+　
+class complex {
+	double re, im;
+public:
+	complex(double r = {},double i = {}) :re{r},im{i} {}
+}
+```
+
+<h2 id="chap13">第13章 例外処理</h2>
+- **13.1.1 a**  
