@@ -20,6 +20,8 @@
 * [第13章 例外処理](#chap13)
 * [第14章 名前空間](#chap14)
 * [第15章 ソースファイルとプログラム](#chap15)
+* [第16章 クラス](#chap16)
+* [第17章 構築と後始末とコピーとムーブ](#chap17)
 
 <h2 id="chap1">第1章 本書の読み進め方</h2>
 - **1.3.2 C++11の新機能について**  
@@ -477,5 +479,73 @@ public:
 - **特筆することはない**  
 
 <h2 id="chap15">第15章 ソースファイルとプログラム</h2>
-- **15.1.1 a**  
+- **15.3.3 インクルードガード**  
+```cpp
+// error.h
+#ifndef CALC_ERROR_H
+#define CALC_ERROR_H
+　
+namespace Error{
+	// ...
+}
+　
+#endif // CALC_ERROR_H
+```
+
+<h2 id="chap16">第16章 クラス</h2>
+- **16.3 具象クラス**  
+  -　よくあるクラスの定義の仕方と使い方の例  
+```cpp
+namespace Chrono{
+	enum class Month {jan=1, feb, mar, apr, may, jun, aug, sep, oct, nov, dec};
+　
+	class Date{
+	public: // 公開インターフェース
+		class Bad_date{} // 例外クラス
+		explicit Date(int dd={}, Month mm={}, int yy={}); // {}はデフォルト値を取り出すという意味
+　
+ 	// Dateを調べるだけで変更しない関数
+		int Day() const;
+		Month month() const;
+		int yewr() const;
+		string string_rep() const; // 文字列表現
+		void char_rep(char s[], int max) const; // C言語スタイル文字列表現
+　
+	// 日付を変えるために変更する関数
+		Date& add_year(int n);
+		Date& add_month(int n);
+		Date& add_day(int n);
+	private :
+		bool is_varid();
+		int d;
+		Month m;
+		int y;
+	};
+　
+	// クラスメンバではないが便利な一連の関数
+	bool is_data(int d, Month m, int y); // 正確な日付であればtrue
+	bool is_leapyear(int y); // うるう年であればtrue
+　
+	// 暗黙裏に定義される演算
+	bool operator==(Date a, Date b);
+	bool operator!=(Date a, Date b);
+	ostream& operator<<(ostream& os, const Date& d); // OSにdを出力
+	istream& operator>>(istream& is, Date& d); // isから日付をdに読み込む
+} // namesoace Chrono
+　
+void f(Date&d){
+	Chrono::Date lvb_day {16, Month::dec, d.year()};
+	if (d.day()==29 && d.month()==Month::feb){
+		//...
+	}
+	if(midnight()) d.add_day(1);
+	cout << "day after:" << d+1 << '\n'; // 加算演算子+を定義する必要あり
+	Date dd;
+	cin>>dd;
+	if(dd=d) cout << "Hurray!\r\n"
+}
+```
+
+<h2 id="chap17">第17章 構築と後始末とコピーとムーブ</h2>
+- **17.1 a**  
   -　aa  
