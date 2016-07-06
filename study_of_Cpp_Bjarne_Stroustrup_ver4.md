@@ -30,6 +30,7 @@
 * [第23章 テンプレート](#chap23)
 * [第24章 ジェネリックプログラミング](#chap24)
 * [第25章 特殊化](#chap25)
+* [第26章 具現化](#chap26)
 
 
 <h2 id="chap1">第1章 本書の読み進め方</h2>
@@ -693,5 +694,45 @@ double s2 = accumulate(ad, ad+4, 0, std::multiplies<double>{});
 ```
 
 <h2 id="chap25">第25章 特殊化</h2>
-- **25.1 a**  
+- **25.2.2 引数としての値**  
+  -　テンプレート引数には整数などの普通の引数(値仮引数)をとれる. これは要素数や上限値を与えるときに便利である. 
+  -　値仮引数には定数式しか渡せない. リテラルも渡すことはできない.　 
+```cpp
+template<typename T, int max>
+class Buffer{
+	T v[max];
+public:
+	Buffer(){}
+	// ...
+}
+　
+Buffer<char>,128> cbuf;
+Buffer<int, 5000> ibuf;
+Buffer<Record, 8> rbuf;
+```
+  -　デフォルトのテンプレート引数と組み合わせると極めて有用なものとなる.  
+```cpp
+template<typename T, T default_value = T{}>
+class Vec{
+	// ...
+}
+　
+Vec<int,42> c1;
+Vec<int> c11;
+Vec<int*, &foo> c2; // なんらかの広域変数"foo"
+Vec<string> c22; // default_value はint*{}すなわちnullptr
+```
+- **25.3 特殊化**  
+  -　さまざまな型のVectorがオブジェクト化されたときには, コードが肥大化してしまうという問題がある. ポインタのコンテナにおいては, 特殊化によって単一の実装を共有できる.
+```cpp
+template<>
+class Vector<void*>{ // 完全特殊化
+	void** p;
+	// ...
+	void*& operator[](int i);
+}
+```
+
+<h2 id="chap26">第26章 具現化</h2>
+- **26.1 a**  
   -　aa  
