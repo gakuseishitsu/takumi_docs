@@ -26,6 +26,11 @@
 * [第19章 特殊な演算子](#chap19)
 * [第20章 派生クラス](#chap20)
 * [第21章 クラス階層](#chap21)
+* [第22章 実行時型情報](#chap22)
+* [第23章 テンプレート](#chap23)
+* [第24章 ジェネリックプログラミング](#chap24)
+* [第25章 特殊化](#chap25)
+
 
 <h2 id="chap1">第1章 本書の読み進め方</h2>
 - **1.3.2 C++11の新機能について**  
@@ -646,5 +651,47 @@ private:
   -　public : あらゆる関数が利用できる.  
 
 <h2 id="chap21">第21章 クラス階層</h2>
-- **21.1.1 a**  
+- **特筆することはない**  
+
+<h2 id="chap22">第22章 実行時型情報</h2>
+- **特筆することはない**  
+
+<h2 id="chap23">第23章 テンプレート</h2>
+- **特筆することはない**  
+
+<h2 id="chap24">第24章 ジェネリックプログラミング</h2>
+- **24.2 アルゴリズムとリフティング**  
+  -　例えばaccumulateを簡単に実装すると以下のようになる.  
+```cpp
+template<typename Iter, typename Val>
+Val accumulate(Iter first, Iter last, Val s){
+	while (first!=last){
+		s = s + *first;
+		++ first;
+	}
+	return s;
+}
+　
+double ad[] = {1,2,3,4};
+double s1 = accumulate(ad, ad+4, 0,0); // double として合計値を求める
+double s2 = accumulate(ad, ad+4, 0); //int として合計値を求める
+```
+  -　これをさらにいろいろな演算に一般化することもできる  
+```cpp
+template<typename Iter, typename Val, typename Oper>
+Val accumulate(Iter first, Iter last, Val s, Oper op){
+	while (first!=last){
+		s = op(s,*first);
+		++ first;
+	}
+	return s;
+}
+　
+double ad[] = {1,2,3,4};
+double s1 = accumulate(ad, ad+4, 0,0, std::plus<double>{});
+double s2 = accumulate(ad, ad+4, 0, std::multiplies<double>{});
+```
+
+<h2 id="chap25">第25章 特殊化</h2>
+- **25.1 a**  
   -　aa  
