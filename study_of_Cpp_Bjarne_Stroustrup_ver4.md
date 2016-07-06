@@ -24,6 +24,8 @@
 * [第17章 構築と後始末とコピーとムーブ](#chap17)
 * [第18章 演算子の多重定義](#chap18)
 * [第19章 特殊な演算子](#chap19)
+* [第20章 派生クラス](#chap20)
+* [第21章 クラス階層](#chap21)
 
 <h2 id="chap1">第1章 本書の読み進め方</h2>
 - **1.3.2 C++11の新機能について**  
@@ -569,5 +571,80 @@ public:
 - **特筆することはない**  
 
 <h2 id="chap19">第19章 特殊な演算子</h2>
-- **19.1 aa**  
-  -　aaa  
+- **特筆することはない**  
+
+<h2 id="chap20">第20章 派生クラス</h2>
+- **20.3.2 仮想関数**  
+  -　virtualによって派生クラスの関数は基底クラスの仮想関数をオーバーライドできる.  
+```cpp
+class Employee{
+public:
+	Employee(const string& name, int dept);
+	virtual void print() const;
+	// ...
+provate:
+	string first_name, famili_name;
+	short department;
+	// ...
+};
+　
+void Employee::print() const{
+	cout << family_name << '\t' << department << '\n';
+}
+　
+class Manager : public Employee{
+public:
+	Manager(const string& name, int dept, int lvl);
+	void print() const;
+	// ...
+private:
+	list<Employee*> group;
+	short level;
+	// ...
+};
+　
+void Manager::print() const{
+	Employee::print();
+	cout << "\tlevel" << level << '\n';
+	// ...
+}
+```
+- **20.4 抽象クラス**  
+  -　純粋仮想関数を持つクラスは抽象くらすとなり, オブジェクトは作成できない.  
+  -　派生クラスで純粋仮想関数が定義されなければ, その派生クラスも抽象クラスとなる.  
+  -　通常, 抽象クラスにはコンストラクタは不要である.
+```cpp
+class Shape{
+public:
+	virtual void rotate(int) = 0; // 純粋仮想関数
+	virtual void draw() const = 0;
+	virtual bool is_closed() const = 0;
+	// ...
+	virtual ~Hhape();
+};
+　
+Shape s; // エラー : 抽象クラスShapeの変数は作れない.
+　
+class Point { /* ... */};
+　
+class Circle : public Shape{
+public:
+	Circle(Point p, int r);
+　
+	void rotate(int) override {} // オーバーライドを明示
+	void draw() const override;
+	bool is_closed() const override {return true;}
+	// ...
+private:
+	Point center;
+	int radious;
+};
+```
+- **20.5 アクセス制御**  
+  -　provate : メンバを宣言したクラスのメンバ関数とフレンドだけが利用できる.  
+  -　protected : メンバを宣言したクラスのメンバ関数とフレンドと, そのクラスから派生したクラスのメンバとフレンドが利用できる. protectedは本当に必要な場合に限って注意深く利用すべきである.  
+  -　public : あらゆる関数が利用できる.  
+
+<h2 id="chap21">第21章 クラス階層</h2>
+- **21.1.1 a**  
+  -　aa  
